@@ -1,12 +1,12 @@
 {
 	"type": "code",
-	"name": "HowtoExample",
-	"modid": "howtoexample",
-	"version": "1.2.0",
+	"name": "SinglePause",
+	"modid": "singlepause",
+	"version": "1.0.0",
 	
-	"description" : "An example mod using VS Code and .NET Core",
-	"website": "https://github.com/copygirl/howto-example-mod",
-	"authors": [ "copygirl" ],
+	"description" : "A quick mod made to pause the game when you open handbook on single player.",
+	"website": "https://github.com/Llama3013/vsmod-singlepause",
+	"authors": [ "llama3013" ],
 	
 	"dependencies": {
 		"game": "1.8.0"
