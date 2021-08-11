@@ -2,11 +2,11 @@
 using Vintagestory.API.Common;
 using Vintagestory.Client.NoObf;
 using Vintagestory.GameContent;
-using Vintagestory.API.Config;
 using System.Reflection;
+using Vintagestory.API.Client;
 
 [assembly: ModInfo("SinglePause",
-    Description = "A quick mod made to pause the game when you open handbook on single player.",
+    Description = "A quick mod made to pause the game when you open WorldMap on single player.",
     Website = "https://github.com/Llama3013/vsmod-singlepause",
     Authors = new[] { "llama3013" })]
 
@@ -17,6 +17,7 @@ namespace SinglePause
     {
         public static ICoreAPI api;
         public static ClientCoreAPI capi;
+        public static EnumDialogType dialogType = EnumDialogType.HUD;
     }
 
     public class SinglePauseMod : ModSystem
@@ -38,31 +39,44 @@ namespace SinglePause
         }
     }
 
-
-    [HarmonyPatch(typeof(GuiDialogHandbook), "OnGuiOpened")]
-    public class Patch_GuiDialogHandbook_OnGuiOpened
+    [HarmonyPatch(typeof(WorldMapManager), "ToggleMap")]
+    public class Patch_WorldMapManager_ToggleMap
     {
-        static void Postfix()
+        static void Postfix(EnumDialogType asType)
         {
-            if (API.api != null && !API.capi.IsGamePaused && API.capi.IsSinglePlayer)
+            if (API.api != null && API.capi.IsSinglePlayer)
             {
-                Vintagestory.Client.NoObf.ClientMain clientMain = (Vintagestory.Client.NoObf.ClientMain)API.api.World;
-                clientMain.PauseGame(true);
-                //API.api.Logger.Debug("should pause");
-            }
-        }
-    }
-
-    [HarmonyPatch(typeof(GuiDialogHandbook), "OnGuiClosed")]
-    public class Patch_GuiDialogHandbook_OnGuiClosed
-    {
-        static void Postfix()
-        {
-            if (API.api != null && API.capi.IsGamePaused && API.capi.IsSinglePlayer)
-            {
-                Vintagestory.Client.NoObf.ClientMain clientMain = (Vintagestory.Client.NoObf.ClientMain)API.api.World;
-                clientMain.PauseGame(false);
-                //API.capi.Logger.Debug("should unpause");
+                WorldMapManager worldMapMan = API.capi.ModLoader.GetModSystem<WorldMapManager>();
+                bool isDlgOpened = worldMapMan.worldMapDlg != null && worldMapMan.worldMapDlg.IsOpened();
+                API.api.Logger.Debug("[pause] {0}", isDlgOpened);
+                if (isDlgOpened)
+                {
+                    if (asType == EnumDialogType.Dialog)
+                    {
+                        Vintagestory.Client.NoObf.ClientMain clientMain = (Vintagestory.Client.NoObf.ClientMain)API.api.World;
+                        clientMain.PauseGame(true);
+                        API.api.Logger.Debug("should pause 1");
+                    }
+                    else
+                    {
+                        Vintagestory.Client.NoObf.ClientMain clientMain = (Vintagestory.Client.NoObf.ClientMain)API.api.World;
+                        clientMain.PauseGame(false);
+                        API.capi.Logger.Debug("should unpause 1");
+                    }
+                } else {
+                    if (asType == EnumDialogType.Dialog)
+                    {
+                        Vintagestory.Client.NoObf.ClientMain clientMain = (Vintagestory.Client.NoObf.ClientMain)API.api.World;
+                        clientMain.PauseGame(false);
+                        API.api.Logger.Debug("should unpause 2");
+                    }
+                    else
+                    {
+                        Vintagestory.Client.NoObf.ClientMain clientMain = (Vintagestory.Client.NoObf.ClientMain)API.api.World;
+                        clientMain.PauseGame(true);
+                        API.capi.Logger.Debug("should pause 2");
+                    }
+                }
             }
         }
     }
