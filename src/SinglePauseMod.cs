@@ -50,7 +50,7 @@ namespace SinglePause
 
         public void PauseCommand(IServerPlayer player, int groupId, CmdArgs args)
         {
-            player.SendMessage(GlobalConstants.GeneralChatGroup, "Your game is paused", EnumChatType.Notification);
+            player.SendMessage(GlobalConstants.GeneralChatGroup, "Your game is paused, open & close the escape menu to resume game", EnumChatType.Notification);
             if (API.api != null && !API.capi.IsGamePaused && API.capi.IsSinglePlayer)
             {
                 Vintagestory.Client.NoObf.ClientMain clientMain = (Vintagestory.Client.NoObf.ClientMain)API.api.World;
