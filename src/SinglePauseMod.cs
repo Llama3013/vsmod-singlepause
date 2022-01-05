@@ -9,7 +9,10 @@ using Vintagestory.API.Config;
 [assembly: ModInfo("SinglePause",
     Description = "A quick mod made to pause the game when you open handbook on single player.",
     Website = "https://github.com/Llama3013/vsmod-singlepause",
-    Authors = new[] { "llama3013" })]
+    Authors = new[] { "Llama3013" },
+    RequiredOnClient = true,
+    IconPath = "modicon.png"
+    )]
 
 namespace SinglePause
 {
